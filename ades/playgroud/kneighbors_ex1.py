@@ -3,7 +3,11 @@ from sklearn import datasets
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 import numpy as np
+
+
 
 # Load the digits dataset: digits
 digits = datasets.load_digits()
@@ -32,8 +36,12 @@ knn = KNeighborsClassifier(n_neighbors=7)
 # Fit the classifier to the training data
 knn.fit(X_train, y_train)
 
+y_pred = knn.predict(X_test)
+
 # Print the accuracy
 print(knn.score(X_test, y_test))
+print confusion_matrix(y_test, y_pred)
+print classification_report(y_test, y_pred)
 
 # Setup arrays to store train and test accuracies
 neighbors = np.arange(1, 9)
