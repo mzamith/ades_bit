@@ -1,7 +1,9 @@
 import datetime
 import pandas as pd
-from sklearn.preprocessing import Imputer
-from sklearn.preprocessing import StandardScaler
+import numpy as np
+from sklearn.preprocessing import Imputer, LabelEncoder, StandardScaler
+import holidays
+from time import time
 
 LABELS = "labels"
 FULL_DATA_SET = "full_dataset"
@@ -51,6 +53,44 @@ def get_week_day(date_key):
     return week_dict[week_day]
 
 
+def get_time_of_month(date_key):
+
+    date_key = str(date_key)
+    day = int(date_key[6:8])
+
+    if day < 10:
+        return "Beginning"
+    if day > 20:
+        return "End"
+    else:
+        return "Middle"
+
+
+def get_holiday(date_key):
+
+    holidays_pt = holidays.Portugal()
+
+    date_key = str(date_key)
+    year = int(date_key[0:4])
+    month = int(date_key[4:6])
+    day = int(date_key[6:8])
+
+    date = datetime.date(year, month, day)
+
+    if (date in holidays_pt) | (date + datetime.timedelta(days=1) in holidays_pt):
+        return 1
+    else:
+        return 0
+
+
+def get_high_week(date_key):
+
+    week_list = [31, 32, 49, 50, 51]
+    week = get_week(date_key)
+
+    return int(week in week_list)
+
+
 def get_month(date_key):
     """
     Gets number of month from date string
@@ -72,6 +112,10 @@ def convert_date_column(df):
 
     # df["week_year"] = map(lambda x: get_week(x), df["time_key"])
     df["day_week"] = map(lambda x: get_week_day(x), df["time_key"])
+    df["high_week"] = map(lambda x: get_high_week(x), df["time_key"])
+    df["holiday"] = map(lambda x: get_holiday(x), df["time_key"])
+    df["time_of_month"] = map(lambda x: get_time_of_month(x), df["time_key"])
+
     df.drop("time_key", axis=1, inplace=True)
     return df
 
@@ -126,8 +170,38 @@ SCALING VALUES
 
 
 def normalize(df):
+    """
+    This was a big pain.
+    Scaling Huge DataFrames takes up a lot of application memory
 
-    scaled = StandardScaler().fit_transform(df)
+    :param df:
+    :return:
+    """
+
+    scaler = StandardScaler(copy=False)
+
+    n = df.shape[0]  # number of rows
+    batch_size = 1000  # number of rows in each call to partial_fit
+    index = 0  # helper-var
+
+    while index < n:
+        partial_size = min(batch_size, n - index)  # needed because last loop is possibly incomplete
+        partial_x = df[index:index + partial_size]
+        scaler.partial_fit(partial_x)
+        index += partial_size
+        print ("Got to... " + str(index))
+
+    print ("Starting transform")
+
+    index = 0
+    scaled = pd.DataFrame(data=np.zeros(df.shape), columns=df.columns)
+    while index < n:
+        partial_size = min(batch_size, n - index)  # needed because last loop is possibly incomplete
+        partial_x = df[index:index + partial_size]
+        scaled[index:index + partial_size] = scaler.transform(partial_x)
+        index += partial_size
+        print ("Transformed... " + str(index))
+    # scaled = scaler.transform(df)
     return scaled
 
 
@@ -194,20 +268,39 @@ def print_information(df):
     print ("Columns: " + str(len(df.columns)))
 
 
-def pre_process(df, categorical='True'):
+def encode(df):
+
+    encoder = LabelEncoder()
+
+    for column in df:
+        if df[column].dtype == "object":
+            df[column] = encoder.fit_transform(df[column])
+
+    return df
+
+
+def pre_process(df, categorical=True):
     """
     Complete pre processing routine
 
     :param df:
+    :param categorical
     :return:
     """
 
+    total_time = 0
+    b = time()
     print("**********************************************")
     print("Starting preprocessing routine...")
     print("**********************************************")
     print("Handling date attributes...")
     df = convert_date_column(df)
     print_information(df)
+
+    print ("Took " + str(round((time() - b) / 60.0, 2)) + " minutes")
+    total_time += time()
+
+
     print("**********************************************")
     print("Dropping null attributes...")
     df = drop_nulls(df)
@@ -231,10 +324,20 @@ def pre_process(df, categorical='True'):
         print("Converting nominal attributes...")
         df = pd.get_dummies(df)
         print_information(df)
-        # print("**********************************************")
-        # print("Scaling data...")
-        # df = normalize(df)
-        # print_information(df)
+        print("**********************************************")
+        print("Scaling data...")
+        df = normalize(df)
+        print_information(df)
+
+    # else:
+    #
+    #     print("**********************************************")
+    #     print("Encoding...")
+    #     df = encode(df)
+    #     print_information(df)
+    #     print (df.head())
+    #     print (df.info())
+    #     print (df.describe())
 
 
     # df = drop_label(df, "quantity_time_key")

@@ -9,6 +9,7 @@ LABELS = "labels"
 FULL_DATA_SET = "full_dataset"
 PROCESSED_DATA_SET = "processed_dataset"
 PROCESSED_DATA_SET_CATEGORICAL = "processed_dataset_categorical"
+PROCESSED_DATA_SET_CATEGORICAL_2 = "processed_dataset_categorical_2"
 
 
 def get_path(package, name=""):
@@ -85,7 +86,8 @@ def import_feature(name):
 def get_data(label=PROCESSED_DATA_SET_CATEGORICAL):
 
     df = import_feature(label)
-    return pp.drop_label(df, "quantity_time_key")
+    y = df["quantity_time_key"]
+    return pp.drop_label(df, "quantity_time_key"), y
 
 
 def get_labels(label=PROCESSED_DATA_SET_CATEGORICAL):
@@ -106,7 +108,7 @@ def get_sample(nrows):
     return sample, target
 
 
-# export(pp.pre_process(import_full()), PROCESSED_DATA_SET_CATEGORICAL)
+# export(pp.pre_process(import_full(), categorical=True), "processed_no_encoding")
 # df = import_feature(PROCESSED_DATA_SET_CATEGORICAL)
 
 # print (df.info())

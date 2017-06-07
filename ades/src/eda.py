@@ -12,13 +12,14 @@ def pie_chart(series):
     plt.pie(series)
     plt.show()
 
-a = data.import_full()
+# a = data.import_full()
 
-print (a.columns)
+#print (a.columns)
 # pie_chart(a.location_cd)
-print ("codigo loja")
-print len(a.location_cd.unique())
+#print ("codigo loja")
+#print len(a.location_cd.unique())
 
-print ("codigo produto")
-print len(a.sku.unique())
+#print ("codigo produto")
+#print len(a.sku.unique())
+
 

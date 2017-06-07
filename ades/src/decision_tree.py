@@ -1,46 +1,45 @@
 import data
 import pandas as pd
 import numpy as np
+import eda
+import metrics
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-import sklearn.metrics as metrics
+from sklearn.model_selection import train_test_split, cross_val_score
+import seaborn as sns
 
 print("Getting data...")
-X = data.get_data()
-y = data.get_labels()
+dt = data.get_data(label="processed_no_encoding")
+X = dt[0]
+y = dt[1]
 
-lasso = DecisionTreeRegressor()
-lb = LabelEncoder()
-X = X.apply(lb.fit_transform)
+tree = DecisionTreeRegressor()
+X = X.apply(LabelEncoder().fit_transform)
 
-print (X.info())
-print (X.describe())
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 print("Fitting model...")
-lasso.fit(X_train, y_train)
+# tree.fit(X_train, y_train)
+tree.fit(X, y)
+
 
 print("Making prediction...")
-y_pred = lasso.predict(X_test)
+# y_pred = tree.predict(X)
+scores = cross_val_score(tree, X, y, cv=5, scoring='r2')
 
-df = pd.DataFrame(data=y_pred, columns=["ypred"])
-df["ytest"] = y_test.tolist()
+# df = pd.DataFrame(data=y_pred, columns=["ypred"])
+# df["ytest"] = y_test.tolist()
 
-print("MEAN " + str(np.mean(y)))
+# print(df.head())
+# print(df.info())
+# print(df.describe())
 
-print(df.head())
-print(df.info())
-print(df.describe())
+# metrics.print_metrics(y_test, y_pred)
+# sns.distplot(y_test)
+# sns.distplot(y_pred)
+# sns.plt.show()
 
-print(lasso.score(X_test, y_test))
-
-print ("Variance Score: " + str(metrics.explained_variance_score(y_test, y_pred)))
-print ("MAE: " + str(metrics.mean_absolute_error(y_test, y_pred)))
-print ("MSW: " + str(metrics.mean_squared_error(y_test, y_pred)))
-print ("R2 SCORE: " + str(metrics.r2_score(y_test, y_pred)))
-
-
+print (scores.mean() * -1.0)
+print (scores.std())
 
 
