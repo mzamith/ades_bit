@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import glob
 import preprocessing as pp
-import numpy as np
+import pickle
 
 
 LABELS = "labels"
@@ -73,6 +73,17 @@ def export(df, name):
     df.to_hdf(file_path, 'table', append=True)
 
 
+def export_to_pickle(obj, name):
+
+    package = "models"
+    name += ".pkl"
+
+    file_path = get_path(package, name)
+
+    with open(file_path, 'wb') as output:
+        pickle.dump(obj, output, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 def import_feature(name):
 
     package = "features"
@@ -108,7 +119,11 @@ def get_sample(nrows):
     return sample, target
 
 
-# export(pp.pre_process(import_full(), categorical=True), "processed_no_encoding")
+# export(pp.pre_process(import_full(), categorical=False), "processed_shrinked_30")
+
+# df = import_full()
+# export(df["quantity_time_key"], "labels")
+
 # df = import_feature(PROCESSED_DATA_SET_CATEGORICAL)
 
 # print (df.info())

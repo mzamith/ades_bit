@@ -12,14 +12,17 @@ def pie_chart(series):
     plt.pie(series)
     plt.show()
 
-# a = data.import_full()
+a = data.import_full()
 
-#print (a.columns)
+negs = a[a["quantity_time_key"] < 0]
+
+# print (a.columns)
 # pie_chart(a.location_cd)
-#print ("codigo loja")
-#print len(a.location_cd.unique())
 
-#print ("codigo produto")
-#print len(a.sku.unique())
+# print len(a.location_cd.unique())
+# print len(a.sku.unique())
+
+print negs.info()
+print negs.describe()
 
 

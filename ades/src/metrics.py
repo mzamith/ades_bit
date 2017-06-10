@@ -14,3 +14,8 @@ def print_metrics(y_test, y_pred):
     print ("MAE: " + str(m.mean_absolute_error(y_test, y_pred)))
     print ("MSE: " + str(m.mean_squared_error(y_test, y_pred)))
     print ("R2 SCORE: " + str(m.r2_score(y_test, y_pred)))
+
+
+def print_time(seconds, task):
+
+    print ("Time spent on " + task + ": " + str(round((seconds / 60.0), 2)) + " minutes.")

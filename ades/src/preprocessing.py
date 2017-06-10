@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.preprocessing import Imputer, LabelEncoder, StandardScaler
 import holidays
 from time import time
+from sklearn.decomposition import IncrementalPCA
 
 LABELS = "labels"
 FULL_DATA_SET = "full_dataset"
@@ -279,6 +280,27 @@ def encode(df):
     return df
 
 
+def shrink(df, n_components=30):
+
+    n = df.shape[0]  # how many rows we have in the dataset
+    chunk_size = 1000  # how many rows we feed to IPCA at a time, the divisor of n
+    ipca = IncrementalPCA(n_components=n_components, batch_size=16)
+
+    for i in range(0, n // chunk_size):
+        print("On: " + str(i))
+        ipca.partial_fit(df[i * chunk_size: (i + 1) * chunk_size])
+
+    pd.to_pickle(ipca, "/Users/mzamith/Desktop/MESW/ADS/ades_bit/ades/src/ipca.pkl")
+    out = np.zeros((n, n_components))
+
+    print ("TRANSFORM")
+    for i in range(0, n // chunk_size):
+        print("On: " + str(i))
+        out[i * chunk_size: (i + 1) * chunk_size] = ipca.transform(df[i * chunk_size: (i + 1) * chunk_size])
+
+    return pd.DataFrame(data=out)
+
+
 def pre_process(df, categorical=True):
     """
     Complete pre processing routine
@@ -300,7 +322,6 @@ def pre_process(df, categorical=True):
     print ("Took " + str(round((time() - b) / 60.0, 2)) + " minutes")
     total_time += time()
 
-
     print("**********************************************")
     print("Dropping null attributes...")
     df = drop_nulls(df)
@@ -320,9 +341,14 @@ def pre_process(df, categorical=True):
 
     if not categorical:
 
+        df = drop_label(df, "quantity_time_key")
         print("**********************************************")
         print("Converting nominal attributes...")
         df = pd.get_dummies(df)
+        print_information(df)
+        print("**********************************************")
+        print("Shrinking...")
+        df = shrink(df)
         print_information(df)
         print("**********************************************")
         print("Scaling data...")
@@ -338,7 +364,6 @@ def pre_process(df, categorical=True):
     #     print (df.head())
     #     print (df.info())
     #     print (df.describe())
-
 
     # df = drop_label(df, "quantity_time_key")
 

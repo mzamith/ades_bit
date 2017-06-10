@@ -8,18 +8,27 @@ import data
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import cross_val_score
 
-feat = data.get_sample(1000)
-names = feat.columns
+X = data.import_feature("processed_shrinked_30")
+print("Imported features")
+print("")
+y = data.import_feature("labels")
+print("Imported labels")
+print("")
 
-X = feat.values
-y = data.get_labels().values
-
-#diabetes = datasets.load_diabetes()
-#X = diabetes.data[:150]
-#y = diabetes.target[:150]
+# print("assign labels")
+# df["labels"] = y.values
+#
+# print("create sample")
+# X = df.sample(n=df.shape[0]//4)
+#
+# print("retrieve labels")
+# y = X["labels"]
+#
+# print("drop labels")
+# X.drop("labels", axis=1, inplace=True)
 
 lasso = Lasso(random_state=0)
-alphas = np.logspace(-4, -0.5, 30)
+alphas = np.logspace(-4, -0.5, 5)
 
 scores = list()
 scores_std = list()
@@ -27,9 +36,12 @@ scores_std = list()
 n_folds = 3
 
 for alpha in alphas:
+    print (alpha)
     lasso.alpha = alpha
     this_scores = cross_val_score(lasso, X, y, cv=n_folds, n_jobs=1)
+    print ("done for alpha: " + str(alpha))
     scores.append(np.mean(this_scores))
+    print (str(np.mean(this_scores)))
     scores_std.append(np.std(this_scores))
 
 scores, scores_std = np.array(scores), np.array(scores_std)
@@ -51,5 +63,5 @@ plt.xlabel('alpha')
 plt.axhline(np.max(scores), linestyle='--', color='.5')
 plt.xlim([alphas[0], alphas[-1]])
 
-
+print ("show")
 plt.show()
