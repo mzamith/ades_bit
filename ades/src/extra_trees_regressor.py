@@ -14,8 +14,10 @@ y = df[1]
 
 X = X.apply(LabelEncoder().fit_transform)
 
-tree, X_test, y_test = model.fit(ExtraTreesRegressor(n_estimators=50), X, y, resampling="normal", export=False)
+tree, X_test, y_test = model.fit(ExtraTreesRegressor(n_estimators=50), X, y, export=False)
 b = model.predict(tree, X_test, y_test)
+
+# model.apply_cross_validation(X, y, ExtraTreesRegressor(n_estimators=50), folds=10)
 
 """
 n_estimators = 10

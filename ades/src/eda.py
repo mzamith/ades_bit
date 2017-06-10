@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import data
-import numpy as np
 
 
 def boxplot(series):
@@ -9,12 +8,16 @@ def boxplot(series):
 
 
 def pie_chart(series):
-    plt.pie(series)
+
+    s = series.value_counts()
+
+    plt.pie(s, labels=s.index)
     plt.show()
 
-a = data.import_full()
+# a = data.import_full()
+b = data.get_data("processed_no_encoding")
 
-negs = a[a["quantity_time_key"] < 0]
+# negs = a[a["quantity_time_key"] < 0]
 
 # print (a.columns)
 # pie_chart(a.location_cd)
@@ -22,7 +25,9 @@ negs = a[a["quantity_time_key"] < 0]
 # print len(a.location_cd.unique())
 # print len(a.sku.unique())
 
-print negs.info()
-print negs.describe()
+print b[0].info()
+print b[0].describe()
+
+pie_chart(b[0]["time_of_month"])
 
 

@@ -9,7 +9,7 @@ y = data.import_feature("labels")
 # solver = ['lbfgs', 'sgd', 'adam']
 # learning_rate = ['constant', 'invscaling', 'adaptive']
 
-tree, X_test, y_test = model.fit(MLPRegressor(), X, y, resampling="normal", export=True)
+tree, X_test, y_test = model.fit(MLPRegressor(), X, y, export=True)
 b = model.predict(tree, X_test, y_test)
 
 """

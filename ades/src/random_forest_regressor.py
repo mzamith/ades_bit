@@ -14,7 +14,7 @@ y = df[1]
 
 X = X.apply(LabelEncoder().fit_transform)
 
-tree, X_test, y_test = model.fit(RandomForestRegressor(), X, y, resampling="normal", export=True)
+tree, X_test, y_test = model.fit(RandomForestRegressor(), X, y, export=True)
 b = model.predict(tree, X_test, y_test)
 
 """
