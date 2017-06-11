@@ -5,6 +5,7 @@ from sklearn.preprocessing import Imputer, LabelEncoder, StandardScaler
 import holidays
 from time import time
 from sklearn.decomposition import IncrementalPCA
+import metrics
 
 LABELS = "labels"
 FULL_DATA_SET = "full_dataset"
@@ -99,8 +100,19 @@ def get_month(date_key):
     :param date_key:
     :return:
     """
-
+    date_key = str(date_key)
     return int(date_key[4:6])
+
+
+def get_day(date_key):
+    """
+    Gets number of tye day from date string
+
+    :param date_key:
+    :return:
+    """
+    date_key = str(date_key)
+    return int(date_key[6:8])
 
 
 def convert_date_column(df):
@@ -111,11 +123,12 @@ def convert_date_column(df):
     :return: same data frame with different formatted columns
     """
 
-    # df["week_year"] = map(lambda x: get_week(x), df["time_key"])
+    df["week_year"] = map(lambda x: get_week(x), df["time_key"])
     df["day_week"] = map(lambda x: get_week_day(x), df["time_key"])
-    df["high_week"] = map(lambda x: get_high_week(x), df["time_key"])
+    # df["high_week"] = map(lambda x: get_high_week(x), df["time_key"])
     df["holiday"] = map(lambda x: get_holiday(x), df["time_key"])
-    df["time_of_month"] = map(lambda x: get_time_of_month(x), df["time_key"])
+    # df["time_of_month"] = map(lambda x: get_time_of_month(x), df["time_key"])
+    df["day_of_month"] = map(lambda x: get_day(x), df["time_key"])
 
     df.drop("time_key", axis=1, inplace=True)
     return df
@@ -258,7 +271,7 @@ def drop_label(df, label):
 def treat_price_retail(df, strategy='mean'):
 
     imp = Imputer(missing_values='NaN', strategy=strategy, axis=1)
-    df["price_retail"] = imp.fit_transform(df["price_retail"]).T
+    df["price_retail"] = imp.fit_transform(df["price_retail"]).T.reshape(-1, 1)
 
     return df
 
@@ -312,6 +325,7 @@ def pre_process(df, categorical=True):
 
     total_time = 0
     b = time()
+    print("")
     print("**********************************************")
     print("Starting preprocessing routine...")
     print("**********************************************")
@@ -319,7 +333,7 @@ def pre_process(df, categorical=True):
     df = convert_date_column(df)
     print_information(df)
 
-    print ("Took " + str(round((time() - b) / 60.0, 2)) + " minutes")
+    metrics.print_time(time() - b, "handling date attributes")
     total_time += time()
 
     print("**********************************************")
