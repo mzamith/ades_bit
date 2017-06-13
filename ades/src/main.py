@@ -93,6 +93,9 @@ else:
     print ("5 - LASSO")
     print ("6 - Ridge")
     print ("7 - Linear Regression")
+    print ("8 - SVM")
+    print ("9 - Gradient Tree Boosting")
+
     print ("")
     opt = collect_input_four()
     model = data.import_model(dict_regressors.get(opt))

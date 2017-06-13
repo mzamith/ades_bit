@@ -7,7 +7,7 @@ import data
 print("")
 print("********************************************")
 print ("Getting data...")
-df = data.get_data("categorical_new_new")
+df = data.get_data("categorical_new_imp")
 
 X = df[0]
 y = df[1]
@@ -18,15 +18,15 @@ tree, X_test, y_test = model.fit(RandomForestRegressor(), X, y, export=True)
 b = model.predict(tree, X_test, y_test)
 
 """
-Variance Score: 0.985952220531
-MAE: 0.00688990670877
-MSE: 0.00627474991772
-R2 SCORE: 0.985952163522
-"""
+Time spent on fitting model: 4.78 minutes.
+********************************************
 
-"""
-Variance Score: 0.863409119746
-MAE: 0.0531752486691
-MSE: 0.0596446614214
-R2 SCORE: 0.863404086577
+Making prediction...
+Variance Score: 0.858464866083
+MAE: 0.052965225233
+MSE: 0.0618039749905
+RMSE: 0.248604052643
+R2 SCORE: 0.858458909551
+Time spent on making prediction: 0.13 minutes.
+********************************************
 """
