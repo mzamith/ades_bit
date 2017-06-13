@@ -1,45 +1,27 @@
-import data
-import pandas as pd
-import numpy as np
-import eda
-import metrics
+import model
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split, cross_val_score
-import seaborn as sns
+import data
 
-print("Getting data...")
-dt = data.get_data(label="processed_no_encoding")
-X = dt[0]
-y = dt[1]
 
-tree = DecisionTreeRegressor()
+print("")
+print("********************************************")
+print ("Getting data...")
+df = data.get_data("categorical_new_new")
+
+X = df[0]
+y = df[1]
+
 X = X.apply(LabelEncoder().fit_transform)
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+tree, X_test, y_test = model.fit(DecisionTreeRegressor(random_state=42), X, y, export=False)
+b = model.predict(tree, X_test, y_test)
 
-print("Fitting model...")
-# tree.fit(X_train, y_train)
-tree.fit(X, y)
+# model.apply_cross_validation(X, y, ExtraTreesRegressor(n_estimators=50, random_state=42), folds=10)
 
-
-print("Making prediction...")
-# y_pred = tree.predict(X)
-scores = cross_val_score(tree, X, y, cv=5, scoring='r2')
-
-# df = pd.DataFrame(data=y_pred, columns=["ypred"])
-# df["ytest"] = y_test.tolist()
-
-# print(df.head())
-# print(df.info())
-# print(df.describe())
-
-# metrics.print_metrics(y_test, y_pred)
-# sns.distplot(y_test)
-# sns.distplot(y_pred)
-# sns.plt.show()
-
-print (scores.mean() * -1.0)
-print (scores.std())
-
-
+"""
+Variance Score: 0.769549902641
+MAE: 0.0663817334165
+MSE: 0.100627394658
+R2 SCORE: 0.769547004523
+"""

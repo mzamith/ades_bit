@@ -2,18 +2,70 @@ import preprocessing
 import data
 from time import time
 import numpy as np
+import pandas as pd
 
-alphas = np.logspace(-4, -0.5, 5)
-print alphas
-print len(alphas)
-
-
-labels = data.import_feature("labels")
+# labels = data.import_feature("labels")
+# X = data.import_full()
 
 a = time()
-X = data.import_feature("processed_shrinked")
-print (str((time() - a) / 60.0))
 
-print (X.head())
-print (X.info())
-print (X.describe())
+X = data.import_feature("test")
+y = data.import_feature("categorical_new_imp")
+
+print (X.equals(y))
+
+# print (X.head())
+# print (X.info())
+# print (X.describe())
+#
+# print (len(X["promotion"]))
+# print (len(X["promotion"].unique()))
+
+# df = pd.DataFrame()
+# df["prod"] = X.sku
+# df["price"] = X.price_retail
+
+# print (df["prod"].mode())
+#
+# print (df[df["prod"] == df["prod"].mode()[0]])
+
+# list_1 = []
+# list_2 = []
+# list_null = []
+#
+# #
+# for a in df["prod"].unique():
+#
+#     b = df["price"][df["prod"] == a]
+#     total = len(b)
+#     nulls = b.isnull().sum()
+#
+#     if nulls != 0 and nulls != total:
+#         print ("***************")
+#         print a
+#         print total
+#         print nulls
+#
+#         list_2.append(a)
+#
+#     elif nulls == total:
+#         list_null.append(a)
+#
+#     elif nulls == 0:
+#         list_1.append(0)
+#
+# print list_1
+# print (str(len(list_1)))
+# print list_2
+# print (str(len(list_2)))
+# print list_null
+# print (str(len(list_null)))
+#
+# print str(len(df["prod"].unique()))
+# print (str(len(list_null) + len(list_1) + len(list_2)))
+#
+#
+# list_ = [2112708, 2555563, 2878321, 3854178, 3879150, 4213211, 4221991, 4313152, 4655971, 4770498, 4821032, 4857073, 5006753, 5111777, 5235665, 5374639, 5380327, 5451913, 5473136, 5561903, 5593679, 5616187, 5632612, 4437035, 2497012, 3883306, 4047531, 4627697, 4796734, 4831048, 4861884, 4867593, 4867601, 5005167, 5113815, 5144582, 5201015, 5217148, 5357994, 5379929, 5380291, 5434914, 4437047, 4456482, 4456519, 4456537, 2844171, 5330493, 5131430, 5131434, 4685616, 2848283, 5411031, 5434946, 2545842, 2964687, 4790376, 5334087, 5357428, 5480423, 5480452, 5580356, 5602416, 5616152, 5136548, 2888438, 2163479, 4858749, 5379924, 4283722, 5124200, 5357415, 5411030, 4790436, 5344275, 5357436, 5478128, 2112712, 2186716, 4943167, 5067556, 5250862, 5388122, 2608867, 3798625, 5254728, 5630374, 5573806, 2918187, 5100486, 5125010, 5251493, 2592443, 2965697, 5313496, 2844173, 5473181, 2163481, 4886887, 4975120, 2543571, 2987708, 4226461, 4863936, 5127455, 5320622, 2343036, 3023742, 4984334, 2163532, 5605820, 2112706, 2418284, 2888461, 2555568, 3023730, 4691540, 5356180, 5356181, 5657348, 5613424, 2920461, 3023769, 4313131, 5689860, 5148827, 5148935, 5194253, 5462465, 5689877, 2191365, 2767306, 5310964, 5422802, 5702922, 5707280, 5250875, 5126086, 5691023, 5255330, 5702939, 5713526, 5703784, 2466774, 4735193, 5197409, 5478136, 5726857, 5125550, 5514033, 5726858, 5726894, 5330424, 5357444, 5562208, 4089261, 4920519, 5646936, 5582564, 5696940, 2112714, 2120403, 3035956, 5726546, 5726575, 5727255, 5727271, 5727303, 5727244, 5746421, 5778765, 5380295, 5765695, 5765769, 5682949, 2920428, 3623539, 2964702, 4883546, 5330503, 5835280, 2592440, 5857895, 4464237]
+
+# print df[df["prod"] == list_[1]]
+

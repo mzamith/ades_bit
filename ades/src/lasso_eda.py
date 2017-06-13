@@ -8,7 +8,7 @@ import data
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import cross_val_score
 
-X = data.import_feature("processed_shrinked_30")
+X = data.import_feature("no_categorical_new_new")
 print("Imported features")
 print("")
 y = data.import_feature("labels")

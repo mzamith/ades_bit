@@ -2,9 +2,23 @@ import data
 import metrics
 from sklearn.model_selection import train_test_split, cross_val_score
 from time import time
+from pandas import DataFrame
+import eda_trees
 
 
 def fit(model, X, y, export=False, mode="test"):
+    """
+    Fits a given model to the test data. Can use random sub sampling for testing
+
+
+    :param model: Machine Learning model -> Python object
+    :param X: Data Frame, with features
+    :param y: Labels
+    :param export: boolean, true if it is intended to export the fitted model to the models folder
+    :param mode: test for random subsampling, other to fit the model to the whole data
+    :return: fitted model
+            if mode = test, also returs the X and y for testing
+    """
 
     alg = model
 
@@ -34,7 +48,16 @@ def fit(model, X, y, export=False, mode="test"):
     return return_value
 
 
-def predict(fitted_model, X_test, y_test):
+def predict(fitted_model, X_test, y_test, export=False):
+    """
+    Given a fitted model, and test data, makes predictions
+
+    :param fitted_model: Model, already fitted
+    :param X_test: Test features
+    :param y_test: Test labels
+    :param export: If true, exports the predicted y
+    :return: predicted labels
+    """
 
     begin_time = time()
     print ("Making prediction...")
@@ -45,12 +68,27 @@ def predict(fitted_model, X_test, y_test):
     metrics.print_time(time() - begin_time, "making prediction")
     print ("********************************************")
     print ("")
+
+    if export:
+        df = DataFrame()
+        df["y_test"] = y_test
+        df["y_pred"] = y_pred
+
+        df.to_csv("/Users/mzamith/Desktop/MESW/ADS/ades_bit/ades/src/models/pred.csv")
+
     return y_pred
 
 
 def apply_cross_validation(X, y, model, folds=5, scoring='r2'):
 
     """
+    Applies cross validation and shows scores
+
+    :param X: Train features
+    :param y: Train labels
+    :param folds: Number of folds for CV
+    :param scoring
+
     Possible values for scoring:
 
     neg_mean_absolute_error
@@ -95,7 +133,6 @@ def apply_cross_validation(X, y, model, folds=5, scoring='r2'):
 # sns.distplot(y_test)
 # sns.distplot(y_pred)
 # sns.plt.show()
-
 
 
 
